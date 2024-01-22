@@ -15,7 +15,6 @@ namespace AuctionService.Entities
         public int Mileage { get; set; }
         public string ImageUrl { get; set; } = string.Empty;
 
-
         // nav properties
         [ForeignKey(nameof(Auction))]
         public Guid AuctionId { get; set; }

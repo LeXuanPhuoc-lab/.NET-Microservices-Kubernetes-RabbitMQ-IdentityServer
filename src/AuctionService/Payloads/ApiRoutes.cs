@@ -10,6 +10,7 @@ namespace AuctionService.Payloads
         {
             public const string Create = Base + "/auctions";
             public const string GetAll = Base + "/auctions";
+            public const string GetAllByDate = Base + "/auctions/{date}";
             public const string GetById = Base + "/auctions/{id:Guid}";
             public const string Delete = Base + "/auctions/{id:Guid}";
         }

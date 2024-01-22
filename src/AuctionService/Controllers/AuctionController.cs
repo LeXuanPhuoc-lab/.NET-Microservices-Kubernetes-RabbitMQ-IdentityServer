@@ -3,6 +3,7 @@ using AuctionService.Payloads;
 using AuctionService.Payloads.Responses;
 using AuctionService.Validations;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,6 +32,26 @@ namespace AuctionService.Controllers
             
             // Response
             return auctions.Count > 0 
+                ? Ok(new BaseResponse(){StatusCode = StatusCodes.Status200OK, Data = auctionDtos})
+                : NotFound(new BaseResponse(){StatusCode = StatusCodes.Status404NotFound, Message = "Not found any auction"});
+        }
+
+        [HttpGet(APIRoutes.Auction.GetAllByDate)]
+        public async Task<IActionResult> GetAllAuctionByDate([FromRoute] string date)
+        {
+            // Get all auction
+            var auctions = _context.Auctions.Include(x => x.Item).OrderBy(x => x.Item.Make).AsQueryable();
+            
+            if(!String.IsNullOrEmpty(date))
+            {
+                var dateFormat = DateTime.Parse(date).ToUniversalTime();
+                auctions = auctions.Where(x => x.UpdatedAt.CompareTo(dateFormat) > 0);
+            }
+
+            var auctionDtos = await auctions.ProjectTo<AuctionDto>(_mapper.ConfigurationProvider).ToListAsync();
+            
+            // Response
+            return auctionDtos.Count > 0 
                 ? Ok(new BaseResponse(){StatusCode = StatusCodes.Status200OK, Data = auctionDtos})
                 : NotFound(new BaseResponse(){StatusCode = StatusCodes.Status404NotFound, Message = "Not found any auction"});
         }

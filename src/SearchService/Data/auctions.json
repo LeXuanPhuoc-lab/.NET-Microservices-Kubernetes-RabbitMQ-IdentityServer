@@ -1,0 +1,222 @@
+[
+  {
+    "id": "6a5011a1-fe1f-47df-9a32-b5346b289391",
+    "reservePrice": 0,
+    "seller": "bob",
+    "winner": "",
+    "soldAmount": 0,
+    "currentHighBid": 0,
+    "createdAt": "2024-01-20T14:03:59.5363Z",
+    "updatedAt": "2024-01-20T14:03:59.5363Z",
+    "auctionEnd": "2024-02-08T14:03:59.5363Z",
+    "status": "Live",
+    "item": {
+      "id": "10729eea-1d27-4ab4-b920-2f6645bf785f",
+      "make": "Audi",
+      "model": "R8",
+      "year": 2021,
+      "color": "White",
+      "mileage": 10050,
+      "imageUrl": "https://cdn.pixabay.com/photo/2019/12/26/20/50/audi-r8-4721217_960_720.jpg",
+      "auctionId": "6a5011a1-fe1f-47df-9a32-b5346b289391"
+    }
+  },
+  {
+    "id": "40490065-dac7-46b6-acc4-df507e0d6570",
+    "reservePrice": 20000,
+    "seller": "tom",
+    "winner": "",
+    "soldAmount": 0,
+    "currentHighBid": 0,
+    "createdAt": "2024-01-20T14:03:59.5363Z",
+    "updatedAt": "2024-01-20T14:03:59.5363Z",
+    "auctionEnd": "2024-02-09T14:03:59.536301Z",
+    "status": "Live",
+    "item": {
+      "id": "fb66302d-93e9-46c1-9839-18065b501ca6",
+      "make": "Audi",
+      "model": "TT",
+      "year": 2020,
+      "color": "Black",
+      "mileage": 25400,
+      "imageUrl": "https://cdn.pixabay.com/photo/2016/09/01/15/06/audi-1636320_960_720.jpg",
+      "auctionId": "40490065-dac7-46b6-acc4-df507e0d6570"
+    }
+  },
+  {
+    "id": "466e4744-4dc5-4987-aae0-b621acfc5e39",
+    "reservePrice": 20000,
+    "seller": "alice",
+    "winner": "",
+    "soldAmount": 0,
+    "currentHighBid": 0,
+    "createdAt": "2024-01-20T14:03:59.536298Z",
+    "updatedAt": "2024-01-20T14:03:59.536298Z",
+    "auctionEnd": "2024-02-19T14:03:59.536298Z",
+    "status": "Live",
+    "item": {
+      "id": "502f9f45-0938-45cc-ac9d-c7f449e816ee",
+      "make": "BMW",
+      "model": "X1",
+      "year": 2017,
+      "color": "White",
+      "mileage": 90000,
+      "imageUrl": "https://cdn.pixabay.com/photo/2017/08/31/05/47/bmw-2699538_960_720.jpg",
+      "auctionId": "466e4744-4dc5-4987-aae0-b621acfc5e39"
+    }
+  },
+  {
+    "id": "c8c3ec17-01bf-49db-82aa-1ef80b833a9f",
+    "reservePrice": 90000,
+    "seller": "alice",
+    "winner": "",
+    "soldAmount": 0,
+    "currentHighBid": 0,
+    "createdAt": "2024-01-20T14:03:59.536296Z",
+    "updatedAt": "2024-01-20T14:03:59.536296Z",
+    "auctionEnd": "2024-03-20T14:03:59.536297Z",
+    "status": "Live",
+    "item": {
+      "id": "d01f10e9-f82f-4f89-ab7e-1aea072eb2f2",
+      "make": "Bugatti",
+      "model": "Veyron",
+      "year": 2018,
+      "color": "Black",
+      "mileage": 15035,
+      "imageUrl": "https://cdn.pixabay.com/photo/2012/05/29/00/43/car-49278_960_720.jpg",
+      "auctionId": "c8c3ec17-01bf-49db-82aa-1ef80b833a9f"
+    }
+  },
+  {
+    "id": "dc1e4071-d19d-459b-b848-b5c3cd3d151f",
+    "reservePrice": 20000,
+    "seller": "bob",
+    "winner": "",
+    "soldAmount": 0,
+    "currentHighBid": 0,
+    "createdAt": "2024-01-20T14:03:59.536299Z",
+    "updatedAt": "2024-01-20T14:03:59.536299Z",
+    "auctionEnd": "2024-03-05T14:03:59.536299Z",
+    "status": "Live",
+    "item": {
+      "id": "327852a5-f2a7-4f31-801b-d03831ed1be7",
+      "make": "Ferrari",
+      "model": "Spider",
+      "year": 2015,
+      "color": "Red",
+      "mileage": 50000,
+      "imageUrl": "https://cdn.pixabay.com/photo/2017/11/09/01/49/ferrari-458-spider-2932191_960_720.jpg",
+      "auctionId": "dc1e4071-d19d-459b-b848-b5c3cd3d151f"
+    }
+  },
+  {
+    "id": "47111973-d176-4feb-848d-0ea22641c31a",
+    "reservePrice": 150000,
+    "seller": "alice",
+    "winner": "",
+    "soldAmount": 0,
+    "currentHighBid": 0,
+    "createdAt": "2024-01-20T14:03:59.5363Z",
+    "updatedAt": "2024-01-20T14:03:59.5363Z",
+    "auctionEnd": "2024-02-02T14:03:59.5363Z",
+    "status": "Live",
+    "item": {
+      "id": "154f5a56-a824-410b-baca-ac28ac6abd14",
+      "make": "Ferrari",
+      "model": "F-430",
+      "year": 2022,
+      "color": "Red",
+      "mileage": 5000,
+      "imageUrl": "https://cdn.pixabay.com/photo/2017/11/08/14/39/ferrari-f430-2930661_960_720.jpg",
+      "auctionId": "47111973-d176-4feb-848d-0ea22641c31a"
+    }
+  },
+  {
+    "id": "afbee524-5972-4075-8800-7d1f9d7b0a0c",
+    "reservePrice": 20000,
+    "seller": "bob",
+    "winner": "",
+    "soldAmount": 0,
+    "currentHighBid": 0,
+    "createdAt": "2024-01-20T14:03:59.53609Z",
+    "updatedAt": "2024-01-20T14:03:59.53609Z",
+    "auctionEnd": "2024-01-30T14:03:59.536161Z",
+    "status": "Live",
+    "item": {
+      "id": "e465367d-14a7-46ee-b96c-abfcf498b486",
+      "make": "Ford",
+      "model": "GT",
+      "year": 2020,
+      "color": "White",
+      "mileage": 50000,
+      "imageUrl": "https://cdn.pixabay.com/photo/2016/05/06/16/32/car-1376190_960_720.jpg",
+      "auctionId": "afbee524-5972-4075-8800-7d1f9d7b0a0c"
+    }
+  },
+  {
+    "id": "bbab4d5a-8565-48b1-9450-5ac2a5c4a654",
+    "reservePrice": 0,
+    "seller": "bob",
+    "winner": "",
+    "soldAmount": 0,
+    "currentHighBid": 0,
+    "createdAt": "2024-01-20T14:03:59.536297Z",
+    "updatedAt": "2024-01-20T14:03:59.536297Z",
+    "auctionEnd": "2024-01-24T14:03:59.536297Z",
+    "status": "Live",
+    "item": {
+      "id": "dda12c09-e4b6-4cac-a835-0a77d11bdb14",
+      "make": "Ford",
+      "model": "Mustang",
+      "year": 2023,
+      "color": "Black",
+      "mileage": 65125,
+      "imageUrl": "https://cdn.pixabay.com/photo/2012/11/02/13/02/car-63930_960_720.jpg",
+      "auctionId": "bbab4d5a-8565-48b1-9450-5ac2a5c4a654"
+    }
+  },
+  {
+    "id": "3659ac24-29dd-407a-81f5-ecfe6f924b9b",
+    "reservePrice": 20000,
+    "seller": "bob",
+    "winner": "",
+    "soldAmount": 0,
+    "currentHighBid": 0,
+    "createdAt": "2024-01-20T14:03:59.536301Z",
+    "updatedAt": "2024-01-20T14:03:59.536301Z",
+    "auctionEnd": "2024-03-08T14:03:59.536301Z",
+    "status": "Live",
+    "item": {
+      "id": "ef920da1-575e-4776-83ad-e83a226ab1c4",
+      "make": "Ford",
+      "model": "Model T",
+      "year": 1938,
+      "color": "Rust",
+      "mileage": 150150,
+      "imageUrl": "https://cdn.pixabay.com/photo/2017/08/02/19/47/vintage-2573090_960_720.jpg",
+      "auctionId": "3659ac24-29dd-407a-81f5-ecfe6f924b9b"
+    }
+  },
+  {
+    "id": "155225c1-4448-4066-9886-6786536e05ea",
+    "reservePrice": 50000,
+    "seller": "tom",
+    "winner": "",
+    "soldAmount": 0,
+    "currentHighBid": 0,
+    "createdAt": "2024-01-20T14:03:59.536298Z",
+    "updatedAt": "2024-01-20T14:03:59.536298Z",
+    "auctionEnd": "2024-01-10T14:03:59.536298Z",
+    "status": "ReserveNotMet",
+    "item": {
+      "id": "d8c9b7fb-fd4c-4c3f-877a-9ae1b4ee7dfb",
+      "make": "Mercedes",
+      "model": "SLK",
+      "year": 2020,
+      "color": "Silver",
+      "mileage": 15001,
+      "imageUrl": "https://cdn.pixabay.com/photo/2016/04/17/22/10/mercedes-benz-1335674_960_720.png",
+      "auctionId": "155225c1-4448-4066-9886-6786536e05ea"
+    }
+  }
+]

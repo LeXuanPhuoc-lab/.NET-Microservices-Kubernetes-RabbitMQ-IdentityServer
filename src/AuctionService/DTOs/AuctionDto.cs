@@ -1,6 +1,4 @@
-using AuctionService.Entities;
-
-namespace AuctionService.Data
+namespace AuctionService.DTOS
 {
     public class AuctionDto 
     {

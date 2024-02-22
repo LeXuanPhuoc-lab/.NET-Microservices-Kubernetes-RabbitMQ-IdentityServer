@@ -10,8 +10,8 @@ namespace AuctionService.Validations
         public CreateAuctionValidation()
         {
             // Adding validation features here 
-            RuleFor(x => x.ImageUrl)
-                .Matches(@"asdasd");
+            // RuleFor(x => x.ImageUrl)
+            //     .Matches(@"asdasd");
         }
     }
 }

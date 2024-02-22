@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using MongoDB.Entities;
@@ -35,6 +36,9 @@ namespace SearchService.Controllers
         [HttpGet(APIRoutes.Search.SearchByValue)]
         public async Task<IActionResult> SearchByValue([FromQuery] SearchRequest request)
         {
+            Console.WriteLine(JsonSerializer.Serialize(await DB.Find<Auction>().ExecuteAsync()));
+
+
             // Create MongoDB Find command 
             var query = DB.Find<Auction,Auction>();
             
@@ -48,15 +52,15 @@ namespace SearchService.Controllers
             // };
 
             // Filter Item
-            query = request.FilterBy?.ToUpper() switch 
-            {
-                FilterBy.FINISHED => query.Match(x => x.AuctionEnd > DateTime.UtcNow.Subtract(TimeSpan.FromDays(10))),
-                FilterBy.ENDINGSOON => query.Match(x => 
-                    x.AuctionEnd < DateTime.UtcNow.AddHours(6)
-                 && x.AuctionEnd < DateTime.UtcNow),
-                // default
-                _ => query.Match(x => x.AuctionEnd < DateTime.UtcNow)
-            };
+            // query = request.FilterBy?.ToUpper() switch 
+            // {
+            //     FilterBy.FINISHED => query.Match(x => x.AuctionEnd > DateTime.UtcNow.Subtract(TimeSpan.FromDays(10))),
+            //     FilterBy.ENDINGSOON => query.Match(x => 
+            //         x.AuctionEnd < DateTime.UtcNow.AddHours(6)
+            //      && x.AuctionEnd < DateTime.UtcNow),
+            //     // default
+            //     _ => query.Match(x => x.AuctionEnd < DateTime.UtcNow)
+            // };
 
             // // Search by winner 
             // if(!String.IsNullOrEmpty(request.Winner))

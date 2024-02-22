@@ -34,7 +34,7 @@ namespace AuctionService.Data
             {
                 // Create new database if not exist
                 await _context.Database.MigrateAsync();
-            }catch(Exception ex)
+            }catch(Exception)
             {
                 throw;
             }
@@ -45,7 +45,7 @@ namespace AuctionService.Data
             try
             {
                 await TrySeedAsync();
-            }catch(Exception ex)
+            }catch(Exception)
             {
                 throw;
             }
@@ -247,7 +247,7 @@ namespace AuctionService.Data
             
                 await _context.AddRangeAsync(auctions);
                 await _context.SaveChangesAsync();
-            }catch(Exception ex)
+            }catch(Exception)
             {
                 throw;
             }

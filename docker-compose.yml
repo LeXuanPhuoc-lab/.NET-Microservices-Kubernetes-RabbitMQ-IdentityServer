@@ -2,6 +2,7 @@ version: '3.4'
 services:
     postgres:
         image: postgres
+        user: postgres
         environment: 
             - POSTGRES_PASSWORD=postgrespw
         ports:
@@ -19,6 +20,13 @@ services:
         volumes:
             # - mongodata:/var/lib/mongodb/data
             - /var/lib/mongodb/data # -> Anonymous volume -> Delete image, also delete its volume
-# volumes:
-#     pgdata:
-#     mongodata:
+    rabbitmq:
+        image: rabbitmq:3-management-alpine
+        ports: 
+            - 5672:5672 # internal port
+            - 15672:15672 # access in browser port
+        volumes:
+            - /var/lib/rabbitmq
+volumes:
+    pgdata:
+    mongodata:

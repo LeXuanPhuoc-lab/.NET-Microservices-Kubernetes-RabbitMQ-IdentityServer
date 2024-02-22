@@ -29,8 +29,6 @@ namespace SearchService.Services
                              .Project(x => x.UpdatedAt.ToString())
                              .ExecuteFirstAsync();
             
-            // Json Options 
-            var options = new JsonSerializerOptions(){PropertyNameCaseInsensitive = true};
 
             // Init Http response
             HttpResponseMessage response = null!;
@@ -54,6 +52,8 @@ namespace SearchService.Services
             var result = await response.Content.ReadFromJsonAsync<BaseResponse>();
             if(result?.Data is not null)
             {
+                // Json Options 
+                var options = new JsonSerializerOptions(){PropertyNameCaseInsensitive = true};
                 // Convert Data response to string
                 var itemJson = JsonSerializer.Serialize(result.Data);
                 // Convert data response string to List<Auction> object

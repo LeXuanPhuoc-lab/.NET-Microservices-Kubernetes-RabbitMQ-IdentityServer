@@ -81,7 +81,6 @@ namespace AuctionService.Controllers
 
         [Authorize]
         [HttpPost(APIRoutes.Auction.Create)]
-        
         public async Task<IActionResult> CreateAuction([FromBody] CreateAuctionRequest request)
         {
             // Validate

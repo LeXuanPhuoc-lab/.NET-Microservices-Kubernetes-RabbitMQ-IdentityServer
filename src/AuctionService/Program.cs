@@ -49,15 +49,21 @@ builder.Services.AddMassTransit(x =>
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options => {
+        // Tell resource server who the token was effective issued 
+        // by and then it can use its configuration
         options.Authority = builder.Configuration["IdentityServiceUrl"];
+        // Because IdentityService run on http
         options.RequireHttpsMetadata = false;
+
         options.TokenValidationParameters.ValidateAudience = false;
         options.TokenValidationParameters.NameClaimType = "username";
     });
 
-
 var app = builder.Build();
 
+
+// Add middleware for authentication, authorization 
+app.UseAuthentication();
 app.UseAuthorization();
 
 // Use Database Initialiser 

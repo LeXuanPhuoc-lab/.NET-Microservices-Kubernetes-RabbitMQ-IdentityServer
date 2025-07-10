@@ -14,6 +14,14 @@ namespace AuctionService.Payloads
             public const string GetById = Base + "/auctions/{id:Guid}";
             public const string Delete = Base + "/auctions/{id:Guid}";
             public const string Update = Base + "/auctions/{id:Guid}";
+
+            // Elastic Search
+
+            public const string CreateWithEls = Base + "/els/index";
+            public const string UpdateWithEls = Base + "/els/auctions/{key}";
+            public const string DeleteWithEls = Base + "/els/auctions/{key}";
+            public const string GetAllWithEls = Base + "/els/auctions";
+            public const string GetByKeyEls = Base + "/els/auctions/{key}";
         }
     }
 }

@@ -2,8 +2,10 @@ using System.Globalization;
 using System.Text.Json;
 using AuctionService.Data;
 using AuctionService.DTOS;
+using AuctionService.Entities;
 using AuctionService.Payloads;
 using AuctionService.Payloads.Responses;
+using AuctionService.Repos;
 using AuctionService.Validations;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -22,14 +24,17 @@ namespace AuctionService.Controllers
         private readonly AuctionDbContext _context;
         private readonly IMapper _mapper;
         private readonly IPublishEndpoint _publishEndPoint;
+        private readonly IElasticGenericRepo<Auction> _repo;
 
         public AuctionController(AuctionDbContext context, IMapper mapper,
-            IPublishEndpoint publishEndpoint)
+            IPublishEndpoint publishEndpoint,
+            IElasticGenericRepo<Auction> repo)
         {
             _context = context;
             _mapper = mapper;
             _publishEndPoint = publishEndpoint;
-        }
+            _repo = repo;
+        }   
 
         [HttpGet(APIRoutes.Auction.GetAll)]
         public async Task<IActionResult> GetAllAuction()
@@ -127,7 +132,7 @@ namespace AuctionService.Controllers
                 Message = $"Not found any auction match id {id}"
             });
 
-            if(auction.Seller != User.Identity.Name) return Forbid();
+            if(auction.Seller != User.Identity?.Name) return Forbid();
 
             var auctionDto = _mapper.Map<AuctionDto>(auction);
 
@@ -206,5 +211,33 @@ namespace AuctionService.Controllers
             })
             { StatusCode = StatusCodes.Status500InternalServerError };
         }
+    
+        [HttpPost(APIRoutes.Auction.CreateWithEls)]
+        public async Task<IEnumerable<string>> CreateIndex(IEnumerable<CreateAuctionRequest> auctions)
+        {
+            var auctionDtos = auctions.Select(x => x.ToAuctionEntity());
+            return await _repo.Index(_mapper.Map<List<Auction>>(auctionDtos));
+        }    
+
+        [HttpGet(APIRoutes.Auction.GetAllWithEls)]
+        public async Task<List<Auction>> GetAllWithEls()
+            => (await _repo.GetAll()).ToList();
+
+        
+        [HttpGet(APIRoutes.Auction.GetByKeyEls)]
+        public async Task<Auction> GetByKeyEls(string key)
+            => await _repo.Get(key);
+
+        [HttpPost(APIRoutes.Auction.UpdateWithEls)]
+        public async Task<bool> UpdateAuctionWithEls([FromRoute] string key, [FromBody] CreateAuctionRequest request)
+        {
+            var auction = _mapper.Map<Auction>(request);
+            return await _repo.Update(auction, key);
+        }
+
+        [HttpDelete(APIRoutes.Auction.DeleteWithEls)]
+        public async Task<bool> DeleteWithEls(string key)
+            => await _repo.Delete(key);
+        
     }
 }

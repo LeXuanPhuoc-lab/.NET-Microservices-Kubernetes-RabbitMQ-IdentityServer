@@ -1,12 +1,23 @@
+using AuctionService;
+using AuctionService.Configuration;
 using AuctionService.Consumers;
 using AuctionService.Data;
+using AuctionService.Extensions;
 using AuctionService.Profiles;
+using AuctionService.Services;
 using AutoMapper;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Config
+builder.Services.Configure<ElasticSettings>(
+    builder.Configuration.GetSection("ElasticSettings"));
+
+// Add elastic search
+builder.Services.ConfigElastic(builder.Configuration);
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -52,7 +63,8 @@ builder.Services.AddMassTransit(x =>
 });
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options => {
+    .AddJwtBearer(options =>
+    {
         // Tell resource server who the token was effective issued 
         // by and then it can use its configuration
         options.Authority = builder.Configuration["IdentityServiceUrl"];
@@ -63,8 +75,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.TokenValidationParameters.NameClaimType = "username";
     });
 
-var app = builder.Build();
+// Add Grpc
+builder.Services.AddGrpc();
 
+var app = builder.Build();
 
 // Add middleware for authentication, authorization 
 app.UseAuthentication();
@@ -74,5 +88,8 @@ app.UseAuthorization();
 app.InitialiserDatabaseAsync().Wait();
 
 app.MapControllers();
+
+// Map gRPC service
+app.MapGrpcService<GrpcAuctionService>();
 
 app.Run();

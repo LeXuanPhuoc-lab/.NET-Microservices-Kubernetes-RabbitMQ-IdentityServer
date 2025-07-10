@@ -9,6 +9,7 @@ namespace SearchService.Common.Constants
     public static class OrderBy
     {
         public const string MAKE = nameof(MAKE); 
-        public const string NEW = nameof(NEW); 
+        public const string NEW = nameof(NEW);
+        public const string ENDINGSOON = nameof(ENDINGSOON); 
     }
 }

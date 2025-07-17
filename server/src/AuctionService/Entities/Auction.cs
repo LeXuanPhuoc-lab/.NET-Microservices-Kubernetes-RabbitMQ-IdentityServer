@@ -8,7 +8,7 @@ namespace AuctionService.Entities
     {
         [Key]
         public Guid Id { get; set; }
-        public int ReservePrice { get; set; } = 0;  
+        public int ReservePrice { get; set; } = 0;
         public string Seller { get; set; } = string.Empty;
         public string Winner { get; set; } = string.Empty;
         public int? SoldAmount { get; set; } = 0;
@@ -18,5 +18,7 @@ namespace AuctionService.Entities
         public DateTime AuctionEnd { get; set; }
         public Status Status { get; set; }
         public Item Item { get; set; } = null!;
+        
+        public bool HasReservePrice() => ReservePrice > 0;
     }
 }

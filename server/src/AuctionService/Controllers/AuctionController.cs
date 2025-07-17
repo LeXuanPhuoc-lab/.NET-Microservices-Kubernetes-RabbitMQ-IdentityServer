@@ -21,32 +21,27 @@ namespace AuctionService.Controllers
     // [Route("api/[controller]")]
     public class AuctionController : ControllerBase
     {
-        private readonly AuctionDbContext _context;
+        private readonly IAuctionRepository _repo;
         private readonly IMapper _mapper;
         private readonly IPublishEndpoint _publishEndPoint;
-        private readonly IElasticGenericRepo<Auction> _repo;
 
-        public AuctionController(AuctionDbContext context, IMapper mapper,
-            IPublishEndpoint publishEndpoint,
-            IElasticGenericRepo<Auction> repo)
+        public AuctionController(IAuctionRepository repo, IMapper mapper,
+            IPublishEndpoint publishEndpoint)
         {
-            _context = context;
+            _repo = repo;
             _mapper = mapper;
             _publishEndPoint = publishEndpoint;
-            _repo = repo;
         }   
 
         [HttpGet(APIRoutes.Auction.GetAll)]
         public async Task<IActionResult> GetAllAuction()
         {
             // Get all auction
-            var auctions = await _context.Auctions.Include(x => x.Item).OrderBy(x => x.Item.Make).ToListAsync();
-            // Mapping to Dtos
-            var auctionDtos = _mapper.Map<IEnumerable<AuctionDto>>(auctions);
+            var auctions = await _repo.GetAuctionsAsync(null);
 
             // Response
             return auctions.Count > 0
-                ? Ok(new BaseResponse() { StatusCode = StatusCodes.Status200OK, Data = auctionDtos })
+                ? Ok(new BaseResponse() { StatusCode = StatusCodes.Status200OK, Data = auctions.ToList() })
                 : NotFound(new BaseResponse() { StatusCode = StatusCodes.Status404NotFound, Message = "Not found any auction" });
         }
 
@@ -54,19 +49,11 @@ namespace AuctionService.Controllers
         public async Task<IActionResult> GetAllAuctionByDate([FromRoute] string date)
         {
             // Get all auction
-            var auctions = _context.Auctions.Include(x => x.Item).OrderBy(x => x.Item.Make).AsQueryable();
-
-            if (!String.IsNullOrEmpty(date))
-            {
-                var dateFormat = DateTime.Parse(date).ToUniversalTime();
-                auctions = auctions.Where(x => x.UpdatedAt.CompareTo(dateFormat) > 0);
-            }
-
-            var auctionDtos = await auctions.ProjectTo<AuctionDto>(_mapper.ConfigurationProvider).ToListAsync();
+            var auctions = await _repo.GetAuctionsAsync(date);
 
             // Response
-            return auctionDtos.Count > 0
-                ? Ok(new BaseResponse() { StatusCode = StatusCodes.Status200OK, Data = auctionDtos })
+            return auctions.Count > 0
+                ? Ok(new BaseResponse() { StatusCode = StatusCodes.Status200OK, Data = auctions })
                 : NotFound(new BaseResponse() { StatusCode = StatusCodes.Status404NotFound, Message = "Not found any auction" });
         }
 
@@ -74,13 +61,11 @@ namespace AuctionService.Controllers
         public async Task<IActionResult> GetAuctionById([FromRoute] Guid id)
         {
             // Get auction by id 
-            var auction = await _context.Auctions.Include(x => x.Item).FirstOrDefaultAsync(x => x.Id == id);
-            // Mapping to Dtos 
-            var auctionDto = _mapper.Map<AuctionDto>(auction);
+            var auction = await _repo.GetAuctionByIdAsync(id);
 
             // Response
             return auction != null
-                ? Ok(new BaseResponse() { StatusCode = StatusCodes.Status200OK, Data = auctionDto })
+                ? Ok(new BaseResponse() { StatusCode = StatusCodes.Status200OK, Data = auction })
                 : NotFound(new BaseResponse() { StatusCode = StatusCodes.Status404NotFound, Message = $"Not found auction with id {id}" });
         }
 
@@ -102,6 +87,7 @@ namespace AuctionService.Controllers
             // Mapping to auction entity 
             var auction = request.ToAuctionEntity();
             auction.Seller = User.Identity?.Name!;
+
             // Auction id
             var auctionId = Guid.NewGuid();
             Console.WriteLine(auctionId);
@@ -112,8 +98,10 @@ namespace AuctionService.Controllers
             await _publishEndPoint.Publish(_mapper.Map<AuctionCreated>(newAuction));
 
             // Add new auction
-            await _context.AddAsync(auction);
-            await _context.SaveChangesAsync();
+            _repo.AddAuction(auction);
+            // Save changes
+            var res = await _repo.SaveChangesAsync();
+            if (!res) return BadRequest("Failed to save auction");
 
             // auction.Item = null;
             // Response
@@ -125,7 +113,7 @@ namespace AuctionService.Controllers
         public async Task<IActionResult> DeleteAuction([FromRoute] Guid id)
         {
             // check exist
-            var auction = await _context.Auctions.FirstOrDefaultAsync(x => x.Id == id);
+            var auction = await _repo.GetAuctionEntityByIdAsync(id);
             if (auction is null) return BadRequest(new BaseResponse
             {
                 StatusCode = StatusCodes.Status400BadRequest,
@@ -140,8 +128,8 @@ namespace AuctionService.Controllers
             await _publishEndPoint.Publish(_mapper.Map<AuctionDelete>(auctionDto));
 
             // delete auction
-            _context.Auctions.Remove(auction);
-            return await _context.SaveChangesAsync() > 0
+            _repo.RemoveAuction(auction);
+            return await _repo.SaveChangesAsync()
                 ? Ok(new BaseResponse()
                 {
                     StatusCode = StatusCodes.Status200OK,
@@ -162,7 +150,7 @@ namespace AuctionService.Controllers
             Console.WriteLine("NAME: " + User.Identity?.Name);
 
             // Get auction by id
-            var auction = await _context.Auctions.Include(x => x.Item).FirstOrDefaultAsync(x => x.Id.Equals(id));
+            var auction = await _repo.GetAuctionEntityByIdAsync(id);
             if (auction is null) return NotFound(new BaseResponse()
             {
                 StatusCode = StatusCodes.Status404NotFound,
@@ -194,8 +182,8 @@ namespace AuctionService.Controllers
             });
 
             // Save change
-            var rowEffected = await _context.SaveChangesAsync();
-            if (rowEffected > 0)
+            var isSaved = await _repo.SaveChangesAsync();
+            if (isSaved)
             {
                 return Ok(new BaseResponse()
                 {
@@ -212,32 +200,32 @@ namespace AuctionService.Controllers
             { StatusCode = StatusCodes.Status500InternalServerError };
         }
     
-        [HttpPost(APIRoutes.Auction.CreateWithEls)]
-        public async Task<IEnumerable<string>> CreateIndex(IEnumerable<CreateAuctionRequest> auctions)
-        {
-            var auctionDtos = auctions.Select(x => x.ToAuctionEntity());
-            return await _repo.Index(_mapper.Map<List<Auction>>(auctionDtos));
-        }    
+        // [HttpPost(APIRoutes.Auction.CreateWithEls)]
+        // public async Task<IEnumerable<string>> CreateIndex(IEnumerable<CreateAuctionRequest> auctions)
+        // {
+        //     var auctionDtos = auctions.Select(x => x.ToAuctionEntity());
+        //     return await _repo.Index(_mapper.Map<List<Auction>>(auctionDtos));
+        // }    
 
-        [HttpGet(APIRoutes.Auction.GetAllWithEls)]
-        public async Task<List<Auction>> GetAllWithEls()
-            => (await _repo.GetAll()).ToList();
+        // [HttpGet(APIRoutes.Auction.GetAllWithEls)]
+        // public async Task<List<Auction>> GetAllWithEls()
+        //     => (await _repo.GetAll()).ToList();
 
         
-        [HttpGet(APIRoutes.Auction.GetByKeyEls)]
-        public async Task<Auction> GetByKeyEls(string key)
-            => await _repo.Get(key);
+        // [HttpGet(APIRoutes.Auction.GetByKeyEls)]
+        // public async Task<Auction> GetByKeyEls(string key)
+        //     => await _repo.Get(key);
 
-        [HttpPost(APIRoutes.Auction.UpdateWithEls)]
-        public async Task<bool> UpdateAuctionWithEls([FromRoute] string key, [FromBody] CreateAuctionRequest request)
-        {
-            var auction = _mapper.Map<Auction>(request);
-            return await _repo.Update(auction, key);
-        }
+        // [HttpPost(APIRoutes.Auction.UpdateWithEls)]
+        // public async Task<bool> UpdateAuctionWithEls([FromRoute] string key, [FromBody] CreateAuctionRequest request)
+        // {
+        //     var auction = _mapper.Map<Auction>(request);
+        //     return await _repo.Update(auction, key);
+        // }
 
-        [HttpDelete(APIRoutes.Auction.DeleteWithEls)]
-        public async Task<bool> DeleteWithEls(string key)
-            => await _repo.Delete(key);
+        // [HttpDelete(APIRoutes.Auction.DeleteWithEls)]
+        // public async Task<bool> DeleteWithEls(string key)
+        //     => await _repo.Delete(key);
         
     }
 }

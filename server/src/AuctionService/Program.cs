@@ -77,6 +77,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 // Add Grpc
 builder.Services.AddGrpc();
+// Add repository
+builder.Services.AddScoped<IAuctionRepository, AuctionRepository>();
 
 var app = builder.Build();
 
@@ -93,3 +95,5 @@ app.MapControllers();
 app.MapGrpcService<GrpcAuctionService>();
 
 app.Run();
+
+public partial class Program { } // For testing purposes

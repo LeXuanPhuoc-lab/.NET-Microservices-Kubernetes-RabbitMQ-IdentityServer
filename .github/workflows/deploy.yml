@@ -13,7 +13,7 @@ jobs:
       matrix:
         service:
           - name: 'dawn1002/auction-service'
-            path: 'src/AuctionService'
+            path: 'server/src/AuctionService'
 
     steps:
     - name: Checkout code
@@ -31,7 +31,8 @@ jobs:
     - name: Build and push Docker image
       uses: docker/build-push-action@v6
       with:
-        context: server
-        file: ${{matrix.service.path}}/Dockerfile
+        context: .
+        file: ${{ matrix.service.path }}/Dockerfile
         push: true
-        tags: ${{matrix.service.name}}:latest
+        tags: ${{ matrix.service.name }}:latest
+

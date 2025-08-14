@@ -35,4 +35,3 @@ jobs:
         file: ${{matrix.service.path}}/Dockerfile
         push: true
         tags: ${{matrix.service.name}}:latest
-        

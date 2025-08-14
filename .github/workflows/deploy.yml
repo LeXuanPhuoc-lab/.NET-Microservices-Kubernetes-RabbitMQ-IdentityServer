@@ -40,6 +40,7 @@ jobs:
         else
           echo "Changes detected in ${{matrix.service.path}}. Proceeding with build"
           echo "continue=true" >> $GITHUB_ENV
+        fi
     - name: Set up Docker buildx
       if: env.continue == 'true'
       uses: docker/setup-buildx-action@v2

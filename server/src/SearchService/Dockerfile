@@ -16,7 +16,7 @@ COPY server/tests/AuctionService.UnitTests/AuctionService.UnitTests.csproj tests
 COPY server/tests/AuctionService.IntergrationTests/AuctionService.IntergrationTests.csproj tests/AuctionService.IntergrationTests/AuctionService.IntergrationTests.csproj
 
 # Restore package deps 
-RUN dotnet restore server/src/Phuoclx.Udemy.Microservices.sln
+RUN dotnet restore src/Phuoclx.Udemy.Microservices.sln
 
 # copy app folders over 
 COPY server/src/SearchService src/SearchService 

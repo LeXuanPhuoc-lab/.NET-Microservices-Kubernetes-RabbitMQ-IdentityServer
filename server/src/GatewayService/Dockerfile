@@ -14,7 +14,7 @@ COPY server/src/GatewayService/GatewayService.csproj src/GatewayService/GatewayS
 COPY server/src/NotificationService/NotificationService.csproj src/NotificationService/NotificationService.csproj
 COPY server/src/Constracts/Constracts.csproj src/Constracts/Constracts.csproj
 COPY server/tests/AuctionService.UnitTests/AuctionService.UnitTests.csproj tests/AuctionService.UnitTests/AuctionService.UnitTests.csproj
-COPY server/tests/AuctionService.IntergrationTests/AuctionService.IntergrationTests.csproj tests/AuctionService.IntergrationTests/AuctionService.Interserver/grationTests.csproj
+COPY server/tests/AuctionService.IntergrationTests/AuctionService.IntergrationTests.csproj tests/AuctionService.IntergrationTests/AuctionService.IntergrationTests.csproj
 
 # Restore package deps 
 RUN dotnet restore src/Phuoclx.Udemy.Microservices.sln

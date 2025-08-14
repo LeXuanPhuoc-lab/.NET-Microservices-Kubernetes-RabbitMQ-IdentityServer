@@ -36,7 +36,7 @@ jobs:
       run: |
         if git diff --quiet HEAD^ HEAD -- ${{matrix.service.path}}; then
           echo "No changes in ${{matrix.service.path}}. Skipping build"
-          echo "continue=false" >> $GITHUB_ENV
+          echo "continue=true" >> $GITHUB_ENV
         else
           echo "Changes detected in ${{matrix.service.path}}. Proceeding with build"
           echo "continue=true" >> $GITHUB_ENV

@@ -1,0 +1,38 @@
+name: Build and publish
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+
+jobs:
+
+  build-and-push:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service:
+          - name: 'dawn1002/auction-service'
+            path: 'src/AuctionService'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Docker buildx
+      uses: docker/setup-buildx-action@v2
+    
+    - name: Login to Docker
+      uses: docker/login-action@
+      with:
+        username: ${{secrets.DOCKER_USERNAME}}
+        password: ${{secrets.DOCKER_PASSWORD}}
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: ${{matrix.service.path}}/Dockerfile
+        push: true
+        tags: ${{matrix.service.name}}:latest
+        

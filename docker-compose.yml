@@ -53,7 +53,7 @@ services:
           timeout: 5s
           retries: 5
     auction-svc:
-        image: phuoclx/auction-svc:lastest
+        image: phuoclx/auction-svc:latest
         build:
             context: ./server
             dockerfile: src/AuctionService/Dockerfile
@@ -91,7 +91,7 @@ services:
             - ASPNETCORE_URLS=http://+:80
             - RabbitMq__Host=rabbitmq 
             - ConnectionStrings__BidDbConnection=mongodb://root:mongopw@mongodb:27017/BidDb?authSource=admin
-            - IdentityServiceUrl=http://localhost:5000
+            - IdentityServiceUrl=http://identity-svc
             - GrpcAuction=http://auction-svc:7777
         ports: 
             - 7003:80 
@@ -134,7 +134,7 @@ services:
             rabbitmq:
                 condition: service_healthy
     identity-svc:
-        image: phuoclx/identity-svc:lastest 
+        image: phuoclx/identity-svc:latest 
         build:
             context: ./server
             dockerfile: src/IdentityService/Dockerfile 
@@ -149,7 +149,7 @@ services:
             postgres:
                 condition: service_healthy
     gateway-svc:
-        image: phuoclx/gateway-svc:lastest 
+        image: phuoclx/gateway-svc:latest
         build:
             context: ./server
             dockerfile: src/GatewayService/Dockerfile 
@@ -159,14 +159,14 @@ services:
             - ClientApp=https://app.phuoclx.com
             - VIRTUAL_HOST=api.phuoclx.com
     web-app:
-        image: web-app:latest
+        image: phuoclx/web-app:latest
         build:
             context: .
             dockerfile: /client/web-app/Dockerfile
         volumes:
             - web-data:/var/lib/web/data
         environment:
-            - AUTH_SECRET=8E0LsNQUbbuCHZgGdmWSaQxSrFya/rxDZht1NvmNtgs=
+            - AUTH_SECRET="8E0LsNQUbbuCHZgGdmWSaQxSrFya/rxDZht1NvmNtgs="
             - API_URL=http://gateway-svc
             - ID_URL=https://id.phuoclx.com
             - ID_URL_INTERNAL=http://identity-svc

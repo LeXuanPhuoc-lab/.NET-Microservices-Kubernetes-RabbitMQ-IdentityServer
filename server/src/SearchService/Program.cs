@@ -2,6 +2,7 @@ using System.Data;
 using MassTransit;
 using MongoDB.Driver;
 using MongoDB.Entities;
+using Polly;
 using SearchService.Consumers;
 using SearchService.Data;
 using SearchService.Entities;
@@ -89,7 +90,12 @@ app.UseAuthorization();
 app.Lifetime.ApplicationStarted.Register(async () =>
 {
   // Database Initialiser 
-  await app.InitailiseDatabaseAsync();
+  await Policy.Handle<TimeoutException>()
+    .WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(5))
+    .ExecuteAndCaptureAsync(async () =>
+    {
+      await app.InitailiseDatabaseAsync();
+    });
 });
 
 app.MapControllers();

@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auction-svc-config
+data:
+  ASPNETCORE_URLS: http://+:80;http://+:7777
+  RabbitMq__Host: rabbit-clusterip
+  IdentityServiceUrl: http://localhost:5000
+  Kestrel__Endpoints__Grpc__Protocols: Http2
+  Kestrel__Endpoints__Grpc__Url: http://+:7777
+  Kestrel__Endpoints__WebApi__Protocols: Http1
+  Kestrel__Endpoints__WebApi__Url: http://+:80
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: search-svc-config
+data:
+  ASPNETCORE_URLS: http://+:80
+  RabbitMq__Host: rabbit-clusterip
+  AppSettings__PageSize: "5"
+  AuctionServiceUrl: http://auction-clusterip
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bidding-svc-config
+data:
+  ASPNETCORE_URLS: http://+:80
+  RabbitMq__Host: rabbit-clusterip
+  IdentityServiceUrl: http://identity-clusterip
+  GrpcAuction: http://auction-clusterip:7777
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: notify-svc-config
+data:
+  ASPNETCORE_URLS: http://+:80
+  RabbitMq__Host: rabbit-clusterip
+  RabbitMq__Username: rabbit
+  RabbitMq__Password: rabbitpw
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gateway-svc-config
+data:
+  ASPNETCORE_URLS: http://+:80
+  ClientApp: https://app.phuoclx.com
+  IdentityServiceUrl: http://identity-clusterip
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: identity-svc-config
+data:
+  ASPNETCORE_URLS: http://+:80
+  IssuerUri: https://id.phuoclx.com
+  ClientApp: https://app.phuoclx.com
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: webapp-config
+data:
+  AUTH_SECRET: "8E0LsNQUbbuCHZgGdmWSaQxSrFya/rxDZht1NvmNtgs="
+  API_URL: http://gateway-clusterip
+  ID_URL: https://id.phuoclx.com
+  ID_URL_INTERNAL: http://identity-clusterip
+  AUTH_URL: https://app.phuoclx.com
+  AUTH_URL_INTERNAL: http://webapp-clusterip:3000

@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bidding-svc
+spec:
+  selector:
+    matchLabels:
+      app: bidding-svc
+  template:
+    metadata:
+      labels:
+        app: bidding-svc
+    spec:
+      containers:
+      - name: bidding-svc
+        image: phuoclx/bidding-svc:latest
+        imagePullPolicy: Never
+        env:
+          - name: ConnectionStrings__BidDbConnection
+            valueFrom:
+              secretKeyRef:
+                name: bidding-secret
+                key: connString
+          - name: RabbitMq__Username
+            valueFrom:
+              secretKeyRef:
+                name: bidding-secret
+                key: rabbitMq_UserName
+          - name: RabbitMq__Password
+            valueFrom:  
+              secretKeyRef:
+                name: bidding-secret
+                key: rabbitMq_Password
+        envFrom:
+          - configMapRef:
+              name: bidding-svc-config
+        ports:
+          - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bidding-clusterip
+spec:
+  type: ClusterIP
+  selector:
+    app: bidding-svc
+  ports:
+  - port: 80
+    targetPort: 80
+

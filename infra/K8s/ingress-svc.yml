@@ -1,0 +1,45 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-svc
+  labels:
+    name: ingress-svc
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+      - app.phuoclx.com
+      - api.phuoclx.com
+      - id.phuoclx.com
+      secretName: phuoclx-app-tls
+  rules:
+  - host: app.phuoclx.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: webapp-clusterip
+            port: 
+              number: 3000
+  - host: api.phuoclx.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: gateway-clusterip
+            port: 
+              number: 80
+  - host: id.phuoclx.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: identity-clusterip
+            port: 
+              number: 80

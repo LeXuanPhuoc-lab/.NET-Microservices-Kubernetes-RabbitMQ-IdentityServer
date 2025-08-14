@@ -6,6 +6,7 @@ using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using MongoDB.Driver;
 using MongoDB.Entities;
+using Polly;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,23 +56,32 @@ builder.Services.AddHostedService<CheckAuctionFinished>();
 // Add Grpc client
 builder.Services.AddScoped<GrpcAuctionClient>();
 
-// Add MongoDB
-DB.InitAsync("BidDb", MongoClientSettings.FromConnectionString(
-    builder.Configuration.GetConnectionString("BidDbConnection")))
-  .Wait();
+// Ensure database is created here...    
+await DB.InitAsync("BidDb", MongoClientSettings.FromConnectionString(
+    builder.Configuration.GetConnectionString("BidDbConnection")));
 
-DB.Index<Bid>()
-  .Key(x => x.AuctionId, KeyType.Text)
-  .Key(x => x.Bidder, KeyType.Text)
-  .Key(x => x.Status, KeyType.Ascending)
-  .CreateAsync()
-  .Wait();
+await DB.Index<Bid>()
+.Key(x => x.AuctionId, KeyType.Text)
+.Key(x => x.Bidder, KeyType.Text)
+.Key(x => x.Status, KeyType.Ascending)
+.CreateAsync();
 
 var app = builder.Build();
 
 // Add middleware for authentication, authorization 
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Hook into application lifetime events and trigger only application fully started 
+// app.Lifetime.ApplicationStarted.Register(async () =>
+// {
+//   // Database Initialiser 
+//   await Policy.Handle<TimeoutException>()
+//     .WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(5))
+//     .ExecuteAndCaptureAsync(async () =>
+//     {
+//     });
+// });
 
 app.MapControllers();
 

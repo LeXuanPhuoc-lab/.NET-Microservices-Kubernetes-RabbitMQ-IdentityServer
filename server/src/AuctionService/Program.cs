@@ -9,6 +9,9 @@ using AutoMapper;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using Npgsql;
+using Polly;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -93,6 +96,20 @@ app.MapControllers();
 
 // Map gRPC service
 app.MapGrpcService<GrpcAuctionService>();
+
+// Hook into application lifetime events and trigger only application fully started 
+app.Lifetime.ApplicationStarted.Register(async () =>
+{
+  // Database Initialiser 
+  await Policy.Handle<TimeoutException>()
+    .WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(5))
+    .ExecuteAndCaptureAsync(async () =>
+    {
+        // Ensure database is created here...    
+        await app.InitialiserDatabaseAsync();
+    });
+});
+
 
 app.Run();
 

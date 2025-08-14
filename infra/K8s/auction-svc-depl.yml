@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auction-svc
+spec:
+  selector:
+    matchLabels:
+      app: auction-svc
+  template:
+    metadata:
+      labels:
+        app: auction-svc
+    spec:
+      containers:
+      - name: auction-svc
+        image: phuoclx/auction-svc:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 80
+          name: web
+        - containerPort: 7777
+          name: grpc
+        env:
+          - name: ConnectionStrings__DefaultDB
+            valueFrom:
+              secretKeyRef:
+                name: auction-secret
+                key: connString
+          - name: RabbitMq__Username
+            valueFrom:
+              secretKeyRef:
+                name: auction-secret
+                key: rabbitMq_UserName
+          - name: RabbitMq__Password
+            valueFrom:  
+              secretKeyRef:
+                name: auction-secret
+                key: rabbitMq_Password
+        envFrom:
+          - configMapRef:
+              name: auction-svc-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auction-clusterip
+spec:
+  type: ClusterIP
+  selector:
+    app: auction-svc
+  ports:
+  - port: 80
+    targetPort: 80
+    name: web
+  - port: 7777
+    targetPort: 7777
+    name: grpc

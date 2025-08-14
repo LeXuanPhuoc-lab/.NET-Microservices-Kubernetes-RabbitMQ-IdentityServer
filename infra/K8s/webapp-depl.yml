@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app
+spec:
+  selector:
+    matchLabels:
+      app: web-app
+  template:
+    metadata:
+      labels:
+        app: web-app
+    spec:
+      dnsPolicy: "None"
+      dnsConfig:
+        nameservers:
+          - 10.96.0.10
+        searches:
+          - default.svc.cluster.local
+          - svc.cluster.local
+          - cluster.local
+      containers:
+      - name: web-app
+        image: phuoclx/web-app:latest
+        imagePullPolicy: Never
+        envFrom:
+          - configMapRef:
+              name: webapp-config
+        ports:
+          - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-clusterip
+spec:
+  type: ClusterIP
+  selector:
+    app: web-app
+  ports:
+  - port: 3000
+    targetPort: 3000
+
